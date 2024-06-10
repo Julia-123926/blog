@@ -44,7 +44,7 @@ const ArticleContent = () => {
         <div className={styles.tags}>{tags}</div>
         <div className={styles.description}>{description}</div>
         <ReactMarkdown remarkPlugins={[remarkGfm]} rehypePlugins={[rehypeRaw]}>
-          {body}
+          {body.split(" ").slice(0, 300).join(" ")}
         </ReactMarkdown>
       </div>
       <div className={styles.right}>

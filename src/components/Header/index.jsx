@@ -9,12 +9,24 @@ const Header = () => {
         <Link to="/">
           <div className={styles.title}>Realworld Blog</div>
         </Link>
-        <div className={styles.authorization}>
+        {/* <div className={styles.authorization}>
           <button className={`${styles.button} ${styles.signIn}`}>
-            Sign In
+            <Link to="/sign-in">Sign In</Link>
           </button>
+
           <button className={`${styles.button} ${styles.signUp}`}>
-            Sign Up
+            <Link to="/sign-up">Sign Up</Link>
+          </button>
+        </div> */}
+        <div className={styles.success}>
+          <button className={`${styles.button} ${styles.create}`}>
+            Create article
+          </button>
+          <button className={`${styles.button} ${styles.name}`}>
+            <Link to="/profile">John Doe</Link>
+          </button>
+          <button className={`${styles.button} ${styles.logOut}`}>
+            Log Out
           </button>
         </div>
       </div>

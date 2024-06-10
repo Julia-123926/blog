@@ -19,7 +19,7 @@ const App = () => {
         <Route path="/sign-in" component={SignIn} />
         <Route path="/articles/:slug" component={ArticleContent} />
         <Route path="/create-article" component={CreateArticle} />
-        <Route path="/edit-profile" component={EditProfile} />
+        <Route path="/profile" component={EditProfile} />
       </Switch>
     </div>
   );
