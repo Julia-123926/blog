@@ -5,7 +5,7 @@ import ReactMarkdown from "react-markdown";
 import rehypeRaw from "rehype-raw";
 import remarkGfm from "remark-gfm";
 import styles from "./ArticleContent.module.scss";
-import { fetchSingleArticle } from "../../../../redux/slices/articleSlice";
+import { fetchSingleArticle } from "../../../../redux/services";
 import { format } from "date-fns";
 
 const ArticleContent = () => {

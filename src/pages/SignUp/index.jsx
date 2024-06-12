@@ -1,8 +1,11 @@
-import React from "react";
+import React, { useState } from "react";
 import { useForm } from "react-hook-form";
+import { useHistory } from "react-router-dom";
 
 import styles from "./SignUp.module.scss";
 import { Link } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { authorizeUser } from "../../redux/services";
 
 const SignUp = () => {
   const {
@@ -14,10 +17,14 @@ const SignUp = () => {
   } = useForm({
     mode: "onBlur",
   });
+  const dispatch = useDispatch();
+  const history = useHistory();
 
   const onSubmit = (data) => {
-    alert(JSON.stringify);
+    // alert(JSON.stringify(data));
+    dispatch(authorizeUser({ data }));
     reset();
+    history.push("/");
   };
 
   const password = watch("password");

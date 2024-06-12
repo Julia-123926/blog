@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { fetchArticles } from "../../redux/slices/articleSlice";
+import { fetchArticles } from "../../redux/services";
 import { v4 as id } from "uuid";
 import { Link } from "react-router-dom";
 import { Pagination, Spin, Alert } from "antd";

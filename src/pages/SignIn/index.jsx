@@ -1,7 +1,11 @@
-import React from "react";
+import React, { useEffect } from "react";
 import styles from "./SignIn.module.scss";
 import { useForm } from "react-hook-form";
 import { Link } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { authorizeUser } from "../../redux/services";
+import { setUser } from "../../redux/slices/authorizationSlice";
+import { useHistory } from "react-router-dom";
 
 const SignIn = () => {
   const {
@@ -13,10 +17,14 @@ const SignIn = () => {
   } = useForm({
     mode: "onBlur",
   });
+  const dispatch = useDispatch();
+  const history = useHistory();
 
   const onSubmit = (data) => {
-    alert(JSON.stringify);
+    // alert(JSON.stringify);
+    dispatch(authorizeUser({ data, flag: "signIn" }));
     reset();
+    history.push("/");
   };
 
   return (
@@ -35,7 +43,7 @@ const SignIn = () => {
               {...register("email", {
                 required: "Email is required",
                 pattern: {
-                  value: /^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/,
+                  value: /^[a-z0-9_.+-]+@[a-z0-9-]+\.[a-z0-9-.]+$/,
                   message: "Invalid email address",
                 },
               })}
