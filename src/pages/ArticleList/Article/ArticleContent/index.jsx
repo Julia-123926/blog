@@ -12,6 +12,8 @@ const ArticleContent = () => {
   const singleArticle = useSelector(
     (state) => state.articleReducer.singleArticle
   );
+  const { user } = useSelector((state) => state.authorizationReducer);
+
   console.log(singleArticle);
   const dispatch = useDispatch();
   const { slug } = useParams();
@@ -35,6 +37,13 @@ const ArticleContent = () => {
   const { username, image } = author;
   return (
     <div className={styles.wrapper}>
+      {user.username === author.username && (
+        <>
+          <button onClick={() => console.log(singleArticle)}>edit</button>
+          <button onClick={() => console.log(singleArticle)}>delete</button>
+        </>
+      )}
+
       <div className={styles.left}>
         <div className={styles.top}>
           <h4 className={styles.title}>{title}</h4>
@@ -44,7 +53,8 @@ const ArticleContent = () => {
         <div className={styles.tags}>{tags}</div>
         <div className={styles.description}>{description}</div>
         <ReactMarkdown remarkPlugins={[remarkGfm]} rehypePlugins={[rehypeRaw]}>
-          {body.split(" ").slice(0, 300).join(" ")}
+          {body}
+          {/* {body.split(" ").slice(0, 300).join(" ")} */}
         </ReactMarkdown>
       </div>
       <div className={styles.right}>

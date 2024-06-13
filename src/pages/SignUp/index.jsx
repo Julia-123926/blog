@@ -22,9 +22,8 @@ const SignUp = () => {
 
   const onSubmit = (data) => {
     // alert(JSON.stringify(data));
-    dispatch(authorizeUser({ data }));
+    const result = dispatch(authorizeUser({ data }));
     reset();
-    history.push("/");
   };
 
   const password = watch("password");

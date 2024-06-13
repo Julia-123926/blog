@@ -22,9 +22,8 @@ const SignIn = () => {
 
   const onSubmit = (data) => {
     // alert(JSON.stringify);
-    dispatch(authorizeUser({ data, flag: "signIn" }));
+    const result = dispatch(authorizeUser({ data, flag: "signIn" }));
     reset();
-    history.push("/");
   };
 
   return (

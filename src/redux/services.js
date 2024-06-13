@@ -1,5 +1,5 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
-
+import axios from "axios";
 const baseAPI = " https://blog.kata.academy/api";
 export const fetchArticles = createAsyncThunk(
   "articles/fetchArticles",
@@ -44,24 +44,88 @@ export const authorizeUser = createAsyncThunk(
     console.log(data);
     console.log(flag);
     const url = flag === "signIn" ? "/login" : "";
+
     try {
-      const response = await fetch(`${baseAPI}/users${url}`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
+      const response = await axios.post(
+        `${baseAPI}/users${url}`,
+        {
+          user: data,
         },
-        body: JSON.stringify({ user: data }),
-      });
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
 
-      if (!response.ok) {
-        const error = await response.json();
-        return rejectWithValue(error);
-      }
-
-      const result = await response.json();
-      return { user: result.user };
+      return { user: response.data.user };
     } catch (error) {
-      return rejectWithValue({ error: error.message });
+      if (error.response) {
+        return rejectWithValue(error.response.data);
+      } else if (error.request) {
+        return rejectWithValue({ error: "No response received" });
+      } else {
+        return rejectWithValue({ error: error.message });
+      }
     }
   }
 );
+
+//Update current user
+export const updateUser = createAsyncThunk(
+  "user/updateUser",
+  async (data, { rejectWithValue }) => {
+    try {
+      const response = await axios.put(
+        `${baseAPI}/user`,
+        {
+          user: {
+            email: data.email,
+            username: data.username,
+            bio: data.bio,
+            password: data.password,
+            image: data.image || null,
+          },
+          // bio: data.bio,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${data.token}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      return { user: response.data.user };
+    } catch (error) {
+      return rejectWithValue(
+        error.response ? error.response.data : new Error(error.message)
+      );
+    }
+  }
+);
+
+// post article
+export const createArticle = async (data, token) => {
+  // console.log(data);
+  // console.log(token);
+  try {
+    const response = await axios.post(
+      `${baseAPI}/articles`,
+      {
+        article: {
+          title: data.title,
+          description: data.description,
+          body: data.body,
+          tagList: [],
+        },
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    return response;
+  } catch (error) {}
+};

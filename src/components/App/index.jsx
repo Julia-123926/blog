@@ -10,7 +10,9 @@ import SignUp from "../../pages/SignUp";
 import SignIn from "../../pages/SignIn";
 import CreateArticle from "../../pages/CreateArticle";
 import EditProfile from "../../pages/EditProfile";
+import EditArticle from "../../pages/EditArticle";
 import { useDispatch } from "react-redux";
+import ProtectedRoute from "../ProtectedRoute";
 const App = () => {
   const dispatch = useDispatch();
   useEffect(() => {
@@ -29,8 +31,10 @@ const App = () => {
         <Route path="/sign-up" component={SignUp} />
         <Route path="/sign-in" component={SignIn} />
         <Route path="/articles/:slug" component={ArticleContent} />
-        <Route path="/articles/:slug/edit" component={ArticleContent} />
-        <Route path="/new-article" component={CreateArticle} />
+        {/* <Route path="/articles/:slug/edit" component={ArticleContent} /> */}
+        {/* <Route path="/new-article" component={CreateArticle} /> */}
+        <ProtectedRoute path="/new-article" component={CreateArticle} />
+        <Route path="/articles/{slug}/edit" component={EditArticle} />
         <Route path="/profile" component={EditProfile} />
       </Switch>
     </div>

@@ -1,6 +1,9 @@
 import React from "react";
 import styles from "./EditProfile.module.scss";
 import { useForm } from "react-hook-form";
+import { useDispatch, useSelector } from "react-redux";
+import { updateUser } from "../../redux/services";
+import { useHistory } from "react-router-dom";
 
 const EditProfile = () => {
   const {
@@ -13,9 +16,16 @@ const EditProfile = () => {
     mode: "onBlur",
   });
 
+  const dispatch = useDispatch();
+  const history = useHistory();
+  const user = useSelector((state) => state.authorizationReducer.user);
+
   const onSubmit = (data) => {
-    alert(JSON.stringify);
+    // alert(JSON.stringify(data));
+    const token = user.token;
+    dispatch(updateUser({ ...data, token }));
     reset();
+    history.push("/");
   };
 
   return (
@@ -27,7 +37,8 @@ const EditProfile = () => {
             <span className={styles.text}>Username</span>
             <input
               type="text"
-              placeholder="Username"
+              defaultValue={user.username}
+              // placeholder="Username"
               className={`${styles.input} ${
                 errors.password ? styles.inputError : ""
               }`}
@@ -44,7 +55,8 @@ const EditProfile = () => {
             <span className={styles.text}>Email address</span>
             <input
               type="text"
-              placeholder="Email"
+              // placeholder="Email"
+              defaultValue={user.email}
               className={`${styles.input} ${
                 errors.email ? styles.inputError : ""
               }`}

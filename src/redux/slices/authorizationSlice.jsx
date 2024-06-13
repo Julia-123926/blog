@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { authorizeUser } from "../services";
+import { updateUser } from "../services";
 
 const initialState = {
   user: {
@@ -9,8 +10,8 @@ const initialState = {
     image: null,
     // repeatPassword: null,
     // isValid: null,
-    // token: null,
-    // bio: null,
+    token: null,
+    bio: null,
   },
   loading: false,
   error: null,
@@ -43,11 +44,29 @@ const authorizationSlice = createSlice({
         username: user.username,
         email: user.email,
         token: user.token,
-        password: "",
+        password: user.password,
       };
       localStorage.setItem("user", JSON.stringify(user));
     });
     builder.addCase(authorizeUser.rejected, (state, action) => {
+      state.status = "rejected";
+      state.error = action.payload;
+    });
+    builder.addCase(updateUser.fulfilled, (state, action) => {
+      // console.log("fulfilled");
+      const { user } = action.payload;
+      state.status = "fulfilled";
+      state.user = {
+        username: user.username,
+        email: user.email,
+        token: user.token,
+        password: user.password,
+        bio: user.bio,
+        image: user.image,
+      };
+      // localStorage.setItem("user", JSON.stringify(user));
+    });
+    builder.addCase(updateUser.rejected, (state, action) => {
       state.status = "rejected";
       state.error = action.payload;
     });

@@ -1,13 +1,12 @@
 import React, { useState } from "react";
-import styles from "./CreateArticle.module.scss";
+import styles from "./EditArticle.module.scss";
 import { useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
-import { createArticle, updateUser } from "../../redux/services";
+import { updateUser } from "../../redux/services";
 import { useHistory } from "react-router-dom";
 
-const CreateArticle = () => {
+const EditArticle = () => {
   const [tags, setTags] = useState([""]);
-  const { user } = useSelector((state) => state.authorizationReducer);
   const addTag = () => {
     setTags([...tags, ""]);
   };
@@ -37,16 +36,16 @@ const CreateArticle = () => {
 
   const onSubmit = (data) => {
     // alert(JSON.stringify(data));
-    createArticle(data, user.token);
+    dispatch(updateUser({ data }));
     reset();
-    // history.push("/");
+    history.push("/");
   };
 
   return (
     <div className={styles.container}>
       <form onSubmit={handleSubmit(onSubmit)} action="#" method="POST">
         <div className={styles.info}>
-          <h3 className={styles.title}>Create new article</h3>
+          <h3 className={styles.title}>Edit article</h3>
 
           <label htmlFor="">
             <span className={styles.text}>Title</span>
@@ -126,7 +125,7 @@ const CreateArticle = () => {
           </label>
 
           <button type="submit" className={styles.button}>
-            Send
+            Save
           </button>
         </div>
       </form>
@@ -134,4 +133,4 @@ const CreateArticle = () => {
   );
 };
 
-export default CreateArticle;
+export default EditArticle;
