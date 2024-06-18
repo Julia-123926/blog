@@ -1,13 +1,11 @@
 .wrapper {
-  max-width: 941px;
-  width: 100%;
+  background-color: #fff;
   border-radius: 5px;
-  background: rgb(255, 255, 255);
-  width: 100%;
-  margin: 0 auto;
-  padding: 25px;
-  // margin-bottom: 15px;
+  height: 100%;
+  width: 80%;
+  padding: 20px;
   display: flex;
+  margin: 0 auto;
   justify-content: space-between;
   .top {
     display: flex;
@@ -22,19 +20,49 @@
       margin-right: 13px;
     }
     .favourited {
-      background-image: url("../../../../assets/Vector.svg");
       background-size: contain;
       background-color: white;
       background-repeat: no-repeat;
       display: inline-block;
-      margin-left: 13px; /* Adjust spacing as needed */
+      margin-left: 13px;
       width: 16px;
       height: 14.23px;
       vertical-align: baseline;
       margin-right: 4px;
       align-self: center;
     }
-    .favoritesCount {
+    .heartWrapper {
+      display: flex;
+      gap: 4px;
+    }
+  }
+  .green {
+    border: 1px solid rgb(82, 196, 26);
+    border-radius: 5px;
+    color: rgb(82, 196, 26);
+  }
+  .green:hover,
+  .green:focus {
+    border-color: darkgreen;
+    color: darkgreen;
+  }
+
+  .body {
+    margin-top: 30px;
+  }
+  .tags {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 4px;
+    .tag {
+      border: 1px solid rgba(0, 0, 0, 0.5);
+      border-radius: 2px;
+      background: rgb(255, 255, 255);
+      font-size: 12px;
+      color: rgba(0, 0, 0, 0.5);
+      font-weight: 400;
+      line-height: 15px;
+      padding: 3px;
     }
   }
   .description {
@@ -54,20 +82,26 @@
 
   .right {
     display: flex;
+    flex-direction: column;
     gap: 12px;
     .info {
       display: flex;
-      flex-direction: column;
-      .username {
-        font-size: 18px;
-        line-height: 28px;
-        letter-spacing: 0%;
-      }
-      .createdAt {
-        color: rgba(0, 0, 0, 0.5);
-        font-size: 12px;
-        line-height: 22px;
-        letter-spacing: 0px;
+      gap: 12px;
+      .user {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
+        .username {
+          font-size: 18px;
+          line-height: 28px;
+          letter-spacing: 0%;
+        }
+        .createdAt {
+          color: rgba(0, 0, 0, 0.5);
+          font-size: 12px;
+          line-height: 22px;
+          letter-spacing: 0px;
+        }
       }
     }
 
@@ -75,6 +109,12 @@
       width: 46px;
       height: 46px;
       border-radius: 50%;
+    }
+
+    .buttons {
+      display: flex;
+      gap: 12px;
+      margin-top: 30px;
     }
   }
 }

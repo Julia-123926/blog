@@ -1,23 +1,23 @@
 import React, { useEffect } from "react";
-import Header from "../Header";
 import { Switch, Route } from "react-router-dom";
+import { useDispatch } from "react-redux";
+
+import Header from "../Header";
 import ArticleContent from "../../pages/ArticleList/Article/ArticleContent";
 import { setUser } from "../../redux/slices/authorizationSlice";
-
-import styles from "./App.module.scss";
 import ArticleList from "../../pages/ArticleList";
 import SignUp from "../../pages/SignUp";
 import SignIn from "../../pages/SignIn";
 import CreateArticle from "../../pages/CreateArticle";
 import EditProfile from "../../pages/EditProfile";
-import EditArticle from "../../pages/EditArticle";
-import { useDispatch } from "react-redux";
 import ProtectedRoute from "../ProtectedRoute";
+
+import styles from "./App.module.scss";
+
 const App = () => {
   const dispatch = useDispatch();
   useEffect(() => {
     const user = localStorage.getItem("user");
-    console.log(user);
     if (user) {
       dispatch(setUser(JSON.parse(user)));
     }
@@ -30,11 +30,9 @@ const App = () => {
         <Route exact path="/" component={ArticleList} />
         <Route path="/sign-up" component={SignUp} />
         <Route path="/sign-in" component={SignIn} />
+        <Route path="/articles/:slug/edit" component={CreateArticle} />
         <Route path="/articles/:slug" component={ArticleContent} />
-        {/* <Route path="/articles/:slug/edit" component={ArticleContent} /> */}
-        {/* <Route path="/new-article" component={CreateArticle} /> */}
         <ProtectedRoute path="/new-article" component={CreateArticle} />
-        <Route path="/articles/{slug}/edit" component={EditArticle} />
         <Route path="/profile" component={EditProfile} />
       </Switch>
     </div>

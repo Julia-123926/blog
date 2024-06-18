@@ -7,6 +7,7 @@ import App from "./components/App";
 import "./index.css";
 import "./stylenull.css";
 import store from "./redux/store";
+
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <BrowserRouter>

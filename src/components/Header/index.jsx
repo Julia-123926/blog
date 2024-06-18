@@ -1,8 +1,10 @@
-import React, { useEffect } from "react";
-import styles from "./Header.module.scss";
-import { Link } from "react-router-dom";
+import React from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { Link } from "react-router-dom";
+
 import { logOut } from "../../redux/slices/authorizationSlice";
+
+import styles from "./Header.module.scss";
 
 const Header = () => {
   const { user } = useSelector((state) => state.authorizationReducer);
@@ -20,16 +22,22 @@ const Header = () => {
         </Link>
         {user.token ? (
           <div className={styles.success}>
-            <button className={`${styles.button} ${styles.create}`}>
-              <Link to="/new-article">Create article</Link>
-            </button>
-            <button className={`${styles.button} ${styles.name}`}>
-              <Link to="/profile">{user.username}</Link>
-            </button>
-            <button
-              onClick={handleLogout}
-              className={`${styles.button} ${styles.logOut}`}
-            >
+            <Link className={`${styles.button} ${styles.create}`} to="/new-article">
+              Create article
+            </Link>
+            <Link className={`${styles.button} ${styles.name}`} to="/profile">
+              <span className={styles.username}>{user.username}</span>
+              {user.image ? (
+                <img className={styles.image} alt="user" src={user.image} />
+              ) : (
+                <img
+                  className={styles.image}
+                  alt="userImg"
+                  src="https://static.productionready.io/images/smiley-cyrus.jpg"
+                />
+              )}
+            </Link>
+            <button onClick={handleLogout} className={`${styles.button} ${styles.logOut}`}>
               Log Out
             </button>
           </div>

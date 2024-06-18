@@ -1,18 +1,22 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
+
 const baseAPI = " https://blog.kata.academy/api";
+
 export const fetchArticles = createAsyncThunk(
   "articles/fetchArticles",
-  async ({ offset = 0, limit = 5 }, { rejectWithValue }) => {
+  async ({ offset = 0, limit = 5, token }, { rejectWithValue }) => {
+    const headers = {
+      "Content-Type": "application/json",
+    };
+    if (token) {
+      headers.Authorization = `Bearer ${token}`;
+    }
     try {
-      const res = await fetch(
-        `${baseAPI}/articles?offset=${offset}&limit=${limit}`
-      );
-      if (!res.ok) {
-        throw new Error("failed to fetch");
-      }
-      const { articles, articlesCount } = await res.json();
-      const totalPages = Math.ceil(articlesCount / 5);
+      const url = `${baseAPI}/articles?offset=${offset}&limit=${limit}`;
+      const res = await axios.get(url, { headers });
+      const { articles, articlesCount } = await res.data;
+      const totalPages = Math.ceil(articlesCount / limit);
       return { articles, totalPages, articlesCount };
     } catch (e) {
       return rejectWithValue(e.message);
@@ -22,15 +26,17 @@ export const fetchArticles = createAsyncThunk(
 
 export const fetchSingleArticle = createAsyncThunk(
   "singleArticle/fetchSingleArticle",
-  async (slug, { rejectWithValue }) => {
+  async ({ slug, token }, { rejectWithValue }) => {
+    const headers = {
+      "Content-Type": "application/json",
+    };
+    if (token) {
+      headers.Authorization = `Bearer ${token}`;
+    }
     try {
-      const res = await fetch(`${baseAPI}/articles/${slug}`);
-      if (!res.ok) {
-        throw new Error("failed to fetch");
-      }
-      const data = await res.json();
-      // console.log(data.article);
-      return data.article;
+      const url = `${baseAPI}/articles/${slug}`;
+      const res = await axios.get(url, { headers });
+      return res.data.article;
     } catch (e) {
       return rejectWithValue(e.message);
     }
@@ -41,8 +47,6 @@ export const fetchSingleArticle = createAsyncThunk(
 export const authorizeUser = createAsyncThunk(
   "authorization/authorizeUser",
   async ({ data, flag }, { rejectWithValue }) => {
-    console.log(data);
-    console.log(flag);
     const url = flag === "signIn" ? "/login" : "";
 
     try {
@@ -57,57 +61,42 @@ export const authorizeUser = createAsyncThunk(
           },
         }
       );
-
       return { user: response.data.user };
     } catch (error) {
-      if (error.response) {
-        return rejectWithValue(error.response.data);
-      } else if (error.request) {
-        return rejectWithValue({ error: "No response received" });
-      } else {
-        return rejectWithValue({ error: error.message });
-      }
+      return rejectWithValue(error.response.data.errors);
     }
   }
 );
 
-//Update current user
-export const updateUser = createAsyncThunk(
-  "user/updateUser",
-  async (data, { rejectWithValue }) => {
-    try {
-      const response = await axios.put(
-        `${baseAPI}/user`,
-        {
-          user: {
-            email: data.email,
-            username: data.username,
-            bio: data.bio,
-            password: data.password,
-            image: data.image || null,
-          },
-          // bio: data.bio,
+// Update current user
+export const updateUser = createAsyncThunk("user/updateUser", async (data, { rejectWithValue }) => {
+  try {
+    const response = await axios.put(
+      `${baseAPI}/user`,
+      {
+        user: {
+          email: data.email,
+          username: data.username,
+          password: data.password,
+          image: data.avatar || null,
         },
-        {
-          headers: {
-            Authorization: `Bearer ${data.token}`,
-            "Content-Type": "application/json",
-          },
-        }
-      );
-      return { user: response.data.user };
-    } catch (error) {
-      return rejectWithValue(
-        error.response ? error.response.data : new Error(error.message)
-      );
-    }
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${data.token}`,
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    return { user: response.data.user };
+  } catch (error) {
+    return rejectWithValue(error.response ? error.response.data : new Error(error.message));
   }
-);
+});
 
 // post article
-export const createArticle = async (data, token) => {
-  // console.log(data);
-  // console.log(token);
+
+export const createArticle = createAsyncThunk("article/createArticle", async ({ data, token }, { rejectWithValue }) => {
   try {
     const response = await axios.post(
       `${baseAPI}/articles`,
@@ -116,7 +105,7 @@ export const createArticle = async (data, token) => {
           title: data.title,
           description: data.description,
           body: data.body,
-          tagList: [],
+          tagList: data.tagList || [],
         },
       },
       {
@@ -126,6 +115,85 @@ export const createArticle = async (data, token) => {
         },
       }
     );
-    return response;
-  } catch (error) {}
-};
+    return response.data;
+  } catch (e) {
+    return rejectWithValue(e.message);
+  }
+});
+
+// delete  an article
+export const deleteArticle = createAsyncThunk("article/deleteArticle", async ({ slug, token }, { rejectWithValue }) => {
+  try {
+    const response = await axios.delete(`${baseAPI}/articles/${slug}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+    });
+    return response.data;
+  } catch (e) {
+    return rejectWithValue(e.message);
+  }
+});
+
+// Update an article
+export const updateArticle = createAsyncThunk(
+  "article/updateArticle",
+  async ({ slug, article, token }, { rejectWithValue }) => {
+    try {
+      const response = await axios.put(
+        `${baseAPI}/articles/${slug}`,
+        { article },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      return response.data;
+    } catch (e) {
+      return rejectWithValue(e.message);
+    }
+  }
+);
+
+// Favorite an article
+export const favoriteArticle = createAsyncThunk(
+  "article/favoriteArticle",
+  async ({ slug, token }, { rejectWithValue }) => {
+    try {
+      const response = await axios.post(
+        `${baseAPI}/articles/${slug}/favorite`,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      return response.data;
+    } catch (e) {
+      return rejectWithValue(e.message);
+    }
+  }
+);
+
+// Unfavorite an article
+export const unfavoriteArticle = createAsyncThunk(
+  "article/unfavoriteArticle",
+  async ({ slug, token }, { rejectWithValue }) => {
+    try {
+      const response = await axios.delete(`${baseAPI}/articles/${slug}/favorite`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      });
+      return response.data;
+    } catch (e) {
+      return rejectWithValue(e.message);
+    }
+  }
+);

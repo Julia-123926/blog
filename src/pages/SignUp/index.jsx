@@ -1,29 +1,33 @@
-import React, { useState } from "react";
+import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
-import { useHistory } from "react-router-dom";
+import { useHistory, Link } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+
+import { authorizeUser } from "../../redux/services";
 
 import styles from "./SignUp.module.scss";
-import { Link } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
-import { authorizeUser } from "../../redux/services";
 
 const SignUp = () => {
   const {
     register,
     handleSubmit,
     watch,
-    reset,
     formState: { errors },
   } = useForm({
     mode: "onBlur",
   });
   const dispatch = useDispatch();
   const history = useHistory();
+  const { error } = useSelector((state) => state.authorizationReducer);
+  const userToken = useSelector((state) => state.authorizationReducer.user.token);
 
+  useEffect(() => {
+    if (userToken) {
+      history.push("/");
+    }
+  }, [history, userToken]);
   const onSubmit = (data) => {
-    // alert(JSON.stringify(data));
-    const result = dispatch(authorizeUser({ data }));
-    reset();
+    dispatch(authorizeUser({ data }));
   };
 
   const password = watch("password");
@@ -33,14 +37,13 @@ const SignUp = () => {
       <form onSubmit={handleSubmit(onSubmit)} action="#" method="POST">
         <div className={styles.info}>
           <h3 className={styles.title}>Create new account</h3>
-          <label htmlFor="">
+          <label htmlFor="username">
             <span className={styles.text}>Username</span>
             <input
+              id="username"
               type="text"
               placeholder="Username"
-              className={`${styles.input} ${
-                errors.username ? styles.inputError : ""
-              }`}
+              className={`${styles.input} ${errors.username || error?.username ? styles.inputError : ""}`}
               {...register("username", {
                 required: "Username is required",
                 minLength: {
@@ -53,18 +56,16 @@ const SignUp = () => {
                 },
               })}
             />
-            {errors.username && (
-              <p className={styles.error}>{errors.username.message}</p>
-            )}
+            {errors.username && <p className={styles.error}>{errors.username.message}</p>}
+            {error?.username && <p className={styles.error}>This username is already taken</p>}
           </label>
-          <label htmlFor="">
+          <label htmlFor="email">
             <span className={styles.text}>Email address</span>
             <input
+              id="email"
               type="text"
               placeholder="Email"
-              className={`${styles.input} ${
-                errors.email ? styles.inputError : ""
-              }`}
+              className={`${styles.input} ${errors.email || error?.email ? styles.inputError : ""}`}
               {...register("email", {
                 required: "Email is required",
                 pattern: {
@@ -73,18 +74,16 @@ const SignUp = () => {
                 },
               })}
             />
-            {errors.email && (
-              <p className={styles.error}>{errors.email.message}</p>
-            )}
+            {errors.email && <p className={styles.error}>{errors.email.message}</p>}
+            {error?.email && <p className={styles.error}>This email is already taken</p>}
           </label>
-          <label htmlFor="">
+          <label htmlFor="password">
             <span className={styles.text}>Password</span>
             <input
+              id="password"
               type="password"
               placeholder="Password"
-              className={`${styles.input} ${
-                errors.password ? styles.inputError : ""
-              }`}
+              className={`${styles.input} ${errors.password ? styles.inputError : ""}`}
               {...register("password", {
                 required: "Password is required",
                 minLength: {
@@ -97,53 +96,45 @@ const SignUp = () => {
                 },
               })}
             />
-            {errors.password && (
-              <p className={styles.error}>{errors.password.message}</p>
-            )}
+            {errors.password && <p className={styles.error}>{errors.password.message}</p>}
           </label>
-          <label htmlFor="">
+          <label htmlFor="repeatPassword">
             <span className={styles.text}>Repeat Password</span>
             <input
+              id="repeatPassword"
               type="password"
               placeholder="Password"
-              className={`${styles.input} ${
-                errors.repeatPassword ? styles.inputError : ""
-              }`}
+              className={`${styles.input} ${errors.repeatPassword ? styles.inputError : ""}`}
               {...register("repeatPassword", {
                 required: "Please confirm your password",
-                validate: (value) =>
-                  value === password || "Passwords must match",
+                validate: (value) => value === password || "Passwords must match",
               })}
             />
-            {errors.repeatPassword && (
-              <p className={styles.error}>{errors.repeatPassword.message}</p>
-            )}
+            {errors.repeatPassword && <p className={styles.error}>{errors.repeatPassword.message}</p>}
           </label>
-          <label htmlFor="">
+          <label htmlFor="checkbox">
             <input
+              id="checkbox"
               type="checkbox"
               className={styles.checkbox}
               {...register("agreement", {
-                required:
-                  "You must agree to the processing of personal information",
+                required: "You must agree to the processing of personal information",
               })}
             />{" "}
-            {/* <span className={styles.customCheckbox}></span> */}
             <span className={`${styles.checkbox} ${styles.agreement}`}>
               I agree to the processing of my personal information
             </span>
-            {errors.agreement && (
-              <p className={styles.error}>{errors.agreement.message}</p>
-            )}
+            {errors.agreement && <p className={styles.error}>{errors.agreement.message}</p>}
           </label>
           <button type="submit" className={styles.button}>
             Create
           </button>
           <span className={styles.question}>
             Already have an account?{" "}
-            <a href="#" className={styles.link}>
-              <Link to="/sign-in"> Sign In.</Link>
-            </a>
+            <Link className={styles.link} to="/sign-in">
+              {" "}
+              Sign In.
+            </Link>
           </span>
         </div>
       </form>

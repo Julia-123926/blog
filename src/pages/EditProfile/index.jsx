@@ -1,15 +1,16 @@
-import React from "react";
-import styles from "./EditProfile.module.scss";
+import React, { useEffect } from "react";
+import { useHistory } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
+
 import { updateUser } from "../../redux/services";
-import { useHistory } from "react-router-dom";
+
+import styles from "./EditProfile.module.scss";
 
 const EditProfile = () => {
   const {
     register,
     handleSubmit,
-    watch,
     reset,
     formState: { errors },
   } = useForm({
@@ -20,9 +21,18 @@ const EditProfile = () => {
   const history = useHistory();
   const user = useSelector((state) => state.authorizationReducer.user);
 
+  useEffect(() => {
+    if (user) {
+      reset({
+        username: user.username,
+        email: user.email,
+        avatar: user.image,
+      });
+    }
+  }, [user, reset]);
+
   const onSubmit = (data) => {
-    // alert(JSON.stringify(data));
-    const token = user.token;
+    const { token } = user;
     dispatch(updateUser({ ...data, token }));
     reset();
     history.push("/");
@@ -38,18 +48,12 @@ const EditProfile = () => {
             <input
               type="text"
               defaultValue={user.username}
-              // placeholder="Username"
-              className={`${styles.input} ${
-                errors.password ? styles.inputError : ""
-              }`}
+              className={`${styles.input} ${errors.password ? styles.inputError : ""}`}
               {...register("username", {
                 required: "Username is required",
-                // message: "Invalid password",
               })}
             />
-            {errors.username && (
-              <p className={styles.error}>{errors.username.message}</p>
-            )}
+            {errors.username && <p className={styles.error}>{errors.username.message}</p>}
           </label>
           <label htmlFor="">
             <span className={styles.text}>Email address</span>
@@ -57,9 +61,7 @@ const EditProfile = () => {
               type="text"
               // placeholder="Email"
               defaultValue={user.email}
-              className={`${styles.input} ${
-                errors.email ? styles.inputError : ""
-              }`}
+              className={`${styles.input} ${errors.email ? styles.inputError : ""}`}
               {...register("email", {
                 required: "Email is required",
                 pattern: {
@@ -68,18 +70,14 @@ const EditProfile = () => {
                 },
               })}
             />
-            {errors.email && (
-              <p className={styles.error}>{errors.email.message}</p>
-            )}
+            {errors.email && <p className={styles.error}>{errors.email.message}</p>}
           </label>
           <label htmlFor="">
             <span className={styles.text}>New password</span>
             <input
-              type="text"
+              type="password"
               placeholder="Password"
-              className={`${styles.input} ${
-                errors.password ? styles.inputError : ""
-              }`}
+              className={`${styles.input} ${errors.password ? styles.inputError : ""}`}
               {...register("password", {
                 required: "Password is required",
                 minLength: {
@@ -92,28 +90,22 @@ const EditProfile = () => {
                 },
               })}
             />
-            {errors.password && (
-              <p className={styles.error}>{errors.password.message}</p>
-            )}
+            {errors.password && <p className={styles.error}>{errors.password.message}</p>}
           </label>
           <label htmlFor="">
             <span className={styles.text}>Avatar image (url)</span>
             <input
               type="text"
               placeholder="Avatar"
-              className={`${styles.input} ${
-                errors.avatar ? styles.inputError : ""
-              }`}
+              className={`${styles.input} ${errors.avatar ? styles.inputError : ""}`}
               {...register("avatar", {
                 pattern: {
-                  value: /^(https?|ftp):\/\/[^\s/$.?#].[^\s]*$/,
+                  value: /^(https?|ftp):\/\/[^\s/$.?#].[^\s]*\.(png|jpg|jpeg|gif)$/i,
                   message: "Invalid URL",
                 },
               })}
             />
-            {errors.avatar && (
-              <p className={styles.error}>{errors.avatar.message}</p>
-            )}
+            {errors.avatar && <p className={styles.error}>{errors.avatar.message}</p>}
           </label>
           <button type="submit" className={styles.button}>
             Save

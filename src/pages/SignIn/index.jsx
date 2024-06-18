@@ -1,28 +1,37 @@
 import React, { useEffect } from "react";
-import styles from "./SignIn.module.scss";
 import { useForm } from "react-hook-form";
-import { Link } from "react-router-dom";
-import { useDispatch } from "react-redux";
+import { Link, useHistory } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+
 import { authorizeUser } from "../../redux/services";
-import { setUser } from "../../redux/slices/authorizationSlice";
-import { useHistory } from "react-router-dom";
+
+import styles from "./SignIn.module.scss";
 
 const SignIn = () => {
   const {
     register,
     handleSubmit,
-    watch,
     reset,
     formState: { errors },
+    setError,
   } = useForm({
     mode: "onBlur",
   });
   const dispatch = useDispatch();
+  const authorization = useSelector((state) => state.authorizationReducer);
   const history = useHistory();
 
+  useEffect(() => {
+    if (authorization.error) {
+      setError("email", { message: "Password or email is invalid" });
+      setError("password", { message: "Password or email is invalid" });
+    }
+    if (authorization.user.token) {
+      history.push("/");
+    }
+  }, [authorization, history, setError]);
   const onSubmit = (data) => {
-    // alert(JSON.stringify);
-    const result = dispatch(authorizeUser({ data, flag: "signIn" }));
+    dispatch(authorizeUser({ data, flag: "signIn" }));
     reset();
   };
 
@@ -31,14 +40,13 @@ const SignIn = () => {
       <form onSubmit={handleSubmit(onSubmit)} action="#" method="POST">
         <div className={styles.info}>
           <h3 className={styles.title}>Sign In</h3>
-          <label htmlFor="">
+          <label htmlFor="email">
             <span className={styles.text}>Email address</span>
             <input
+              id="email"
               type="text"
               placeholder="Email"
-              className={`${styles.input} ${
-                errors.email ? styles.inputError : ""
-              }`}
+              className={`${styles.input} ${errors.email ? styles.inputError : ""}`}
               {...register("email", {
                 required: "Email is required",
                 pattern: {
@@ -47,35 +55,29 @@ const SignIn = () => {
                 },
               })}
             />
-            {errors.email && (
-              <p className={styles.error}>{errors.email.message}</p>
-            )}
+            {errors.email && <p className={styles.error}>{errors.email.message}</p>}
           </label>
-          <label htmlFor="">
+          <label htmlFor="password">
             <span className={styles.text}>Password</span>
             <input
+              id="password"
               type="password"
               placeholder="Password"
-              className={`${styles.input} ${
-                errors.password ? styles.inputError : ""
-              }`}
+              className={`${styles.input} ${errors.password ? styles.inputError : ""}`}
               {...register("password", {
                 required: "Password is empty",
-                // message: "Invalid password",
               })}
             />
-            {errors.password && (
-              <p className={styles.error}>{errors.password.message}</p>
-            )}
+            {errors.password && <p className={styles.error}>{errors.password.message}</p>}
           </label>
           <button type="submit" className={styles.button}>
             Login
           </button>
           <span className={styles.question}>
             Don’t have an account?{" "}
-            <a className={styles.link}>
-              <Link to="./sign-up">Sign Up.</Link>
-            </a>
+            <Link to="./sign-up" className={styles.link}>
+              Sign Up.
+            </Link>
           </span>
         </div>
       </form>
