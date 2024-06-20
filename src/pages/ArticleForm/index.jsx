@@ -50,7 +50,8 @@ const ArticleForm = ({ isEdit, button, title }) => {
     setTags([...tags, ""]);
   };
 
-  const removeTag = (index) => {
+  const removeTag = (e, index) => {
+    e.preventDefault();
     const newTags = tags.slice();
     newTags.splice(index, 1);
     setTags(newTags);
@@ -149,7 +150,7 @@ const ArticleForm = ({ isEdit, button, title }) => {
                     onChange={(event) => handleTagChange(index, event)}
                     placeholder="Tag"
                   />
-                  <button className={styles.deleteBtn} onClick={() => removeTag(index)}>
+                  <button className={styles.deleteBtn} onClick={(event) => removeTag(event, index)}>
                     Delete
                   </button>
                 </li>
