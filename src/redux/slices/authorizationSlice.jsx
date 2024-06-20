@@ -1,6 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-import { authorizeUser, updateUser } from "../services";
+import { authorizeUser, updateUser, loginUser } from "../services";
 
 const initialState = {
   user: {
@@ -11,7 +11,8 @@ const initialState = {
     token: null,
   },
   loading: false,
-  error: null,
+  signInErr: null,
+  signUpErr: null,
 };
 
 const authorizationSlice = createSlice({
@@ -31,9 +32,13 @@ const authorizationSlice = createSlice({
     },
   },
   extraReducers: (builder) => {
+    builder.addCase(authorizeUser.rejected, (state, action) => {
+      state.loading = false;
+      state.signInErr = action.payload;
+    });
     builder.addCase(authorizeUser.pending, (state) => {
       state.loading = true;
-      state.error = null;
+      state.signInErr = null;
     });
     builder.addCase(authorizeUser.fulfilled, (state, action) => {
       const { user } = action.payload;
@@ -47,9 +52,25 @@ const authorizationSlice = createSlice({
       };
       localStorage.setItem("user", JSON.stringify(user));
     });
-    builder.addCase(authorizeUser.rejected, (state, action) => {
+    builder.addCase(loginUser.rejected, (state, action) => {
       state.loading = false;
-      state.error = action.payload;
+      state.signUpErr = action.payload;
+    });
+    builder.addCase(loginUser.pending, (state) => {
+      state.loading = true;
+      state.signUpErr = null;
+    });
+    builder.addCase(loginUser.fulfilled, (state, action) => {
+      const { user } = action.payload;
+      state.loading = false;
+      state.user = {
+        username: user.username,
+        email: user.email,
+        token: user.token,
+        password: user.password,
+        image: user.image,
+      };
+      localStorage.setItem("user", JSON.stringify(user));
     });
     builder.addCase(updateUser.fulfilled, (state, action) => {
       const { user } = action.payload;

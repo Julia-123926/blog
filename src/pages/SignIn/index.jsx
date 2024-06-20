@@ -3,7 +3,7 @@ import { useForm } from "react-hook-form";
 import { Link, useHistory } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 
-import { authorizeUser } from "../../redux/services";
+import { loginUser } from "../../redux/services";
 
 import styles from "./SignIn.module.scss";
 
@@ -22,7 +22,7 @@ const SignIn = () => {
   const history = useHistory();
 
   useEffect(() => {
-    if (authorization.error) {
+    if (authorization.signUpErr) {
       setError("email", { message: "Password or email is invalid" });
       setError("password", { message: "Password or email is invalid" });
     }
@@ -31,7 +31,7 @@ const SignIn = () => {
     }
   }, [authorization, history, setError]);
   const onSubmit = (data) => {
-    dispatch(authorizeUser({ data, flag: "signIn" }));
+    dispatch(loginUser({ data }));
     reset();
   };
 

@@ -18,7 +18,7 @@ const SignUp = () => {
   });
   const dispatch = useDispatch();
   const history = useHistory();
-  const { error } = useSelector((state) => state.authorizationReducer);
+  const { signInErr } = useSelector((state) => state.authorizationReducer);
   const userToken = useSelector((state) => state.authorizationReducer.user.token);
 
   useEffect(() => {
@@ -43,7 +43,7 @@ const SignUp = () => {
               id="username"
               type="text"
               placeholder="Username"
-              className={`${styles.input} ${errors.username || error?.username ? styles.inputError : ""}`}
+              className={`${styles.input} ${errors.username || signInErr?.username ? styles.inputError : ""}`}
               {...register("username", {
                 required: "Username is required",
                 minLength: {
@@ -57,7 +57,7 @@ const SignUp = () => {
               })}
             />
             {errors.username && <p className={styles.error}>{errors.username.message}</p>}
-            {error?.username && <p className={styles.error}>This username is already taken</p>}
+            {signInErr?.username && <p className={styles.error}>This username is already taken</p>}
           </label>
           <label htmlFor="email">
             <span className={styles.text}>Email address</span>
@@ -65,7 +65,7 @@ const SignUp = () => {
               id="email"
               type="text"
               placeholder="Email"
-              className={`${styles.input} ${errors.email || error?.email ? styles.inputError : ""}`}
+              className={`${styles.input} ${errors.email || signInErr?.email ? styles.inputError : ""}`}
               {...register("email", {
                 required: "Email is required",
                 pattern: {
@@ -75,7 +75,7 @@ const SignUp = () => {
               })}
             />
             {errors.email && <p className={styles.error}>{errors.email.message}</p>}
-            {error?.email && <p className={styles.error}>This email is already taken</p>}
+            {signInErr?.email && <p className={styles.error}>This email is already taken</p>}
           </label>
           <label htmlFor="password">
             <span className={styles.text}>Password</span>

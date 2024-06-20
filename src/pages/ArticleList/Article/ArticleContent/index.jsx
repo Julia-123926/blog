@@ -78,14 +78,14 @@ const ArticleContent = () => {
             <div className="favoritesCount">{favoritesCount}</div>
           </div>
         </div>
-        <div className={styles.tags}>
+        <ul className={styles.tags}>
           {tagList.map((tag) => (
-            <span key={id()} className={styles.tag}>
+            <li key={id()} className={styles.tag}>
               {tag}
-            </span>
+            </li>
           ))}
-        </div>
-        <div className={styles.description}>{description}</div>
+        </ul>
+        <p className={styles.description}>{description}</p>
         <ReactMarkdown className={styles.body} remarkPlugins={[remarkGfm]} rehypePlugins={[rehypeRaw]}>
           {body}
         </ReactMarkdown>

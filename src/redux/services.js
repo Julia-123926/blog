@@ -43,30 +43,45 @@ export const fetchSingleArticle = createAsyncThunk(
   }
 );
 
-// Register a new user/login a user
-export const authorizeUser = createAsyncThunk(
-  "authorization/authorizeUser",
-  async ({ data, flag }, { rejectWithValue }) => {
-    const url = flag === "signIn" ? "/login" : "";
-
-    try {
-      const response = await axios.post(
-        `${baseAPI}/users${url}`,
-        {
-          user: data,
+// Register a new user
+export const authorizeUser = createAsyncThunk("authorization/authorizeUser", async ({ data }, { rejectWithValue }) => {
+  try {
+    const response = await axios.post(
+      `${baseAPI}/users`,
+      {
+        user: data,
+      },
+      {
+        headers: {
+          "Content-Type": "application/json",
         },
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
-      return { user: response.data.user };
-    } catch (error) {
-      return rejectWithValue(error.response.data.errors);
-    }
+      }
+    );
+    return { user: response.data.user };
+  } catch (error) {
+    return rejectWithValue(error.response.data.errors);
   }
-);
+});
+
+// login a user
+export const loginUser = createAsyncThunk("authorization/loginUser", async ({ data }, { rejectWithValue }) => {
+  try {
+    const response = await axios.post(
+      `${baseAPI}/users/login`,
+      {
+        user: data,
+      },
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    return { user: response.data.user };
+  } catch (error) {
+    return rejectWithValue(error.response.data.errors);
+  }
+});
 
 // Update current user
 export const updateUser = createAsyncThunk("user/updateUser", async (data, { rejectWithValue }) => {

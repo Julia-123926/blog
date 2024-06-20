@@ -16,7 +16,6 @@ const ArticleList = () => {
 
   useEffect(() => {
     const offset = (currentPage - 1) * 5;
-
     if (user.token) {
       dispatch(fetchArticles({ offset, limit: 5, token: user.token }));
     } else dispatch(fetchArticles({ offset, limit: 5 }));
@@ -27,7 +26,7 @@ const ArticleList = () => {
   };
 
   return (
-    <>
+    <main>
       {status === "loading" && <Spin className={styles.spin} size="large" />}
       {status === "rejected" && <Alert message="Не удалось загрузить статьи, повторите попытку позже" type="info" />}
       <ul className={styles.list}>
@@ -44,7 +43,7 @@ const ArticleList = () => {
           onChange={handlePageChange}
         />
       </ul>
-    </>
+    </main>
   );
 };
 

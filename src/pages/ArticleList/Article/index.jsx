@@ -63,14 +63,14 @@ const Article = (article) => {
             <div className={styles.favoritesCount}>{favoritesCount}</div>
           </div>
         </div>
-        <div className={styles.tags}>
+        <ul className={styles.tags}>
           {tagList.map((tag) => (
-            <span key={id()} className={styles.tag}>
+            <li key={id()} className={styles.tag}>
               {tag}
-            </span>
+            </li>
           ))}
-        </div>
-        <div className={styles.description}>{description}</div>
+        </ul>
+        <p className={styles.description}>{description}</p>
       </div>
       <div className={styles.right}>
         <div className={styles.info}>

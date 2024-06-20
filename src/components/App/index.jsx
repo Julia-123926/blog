@@ -8,9 +8,10 @@ import { setUser } from "../../redux/slices/authorizationSlice";
 import ArticleList from "../../pages/ArticleList";
 import SignUp from "../../pages/SignUp";
 import SignIn from "../../pages/SignIn";
-import CreateArticle from "../../pages/CreateArticle";
 import EditProfile from "../../pages/EditProfile";
 import ProtectedRoute from "../ProtectedRoute";
+import EditArticle from "../../pages/EditArticle";
+import CreateArticle from "../../pages/CreateArticle";
 
 import styles from "./App.module.scss";
 
@@ -30,7 +31,7 @@ const App = () => {
         <Route exact path="/" component={ArticleList} />
         <Route path="/sign-up" component={SignUp} />
         <Route path="/sign-in" component={SignIn} />
-        <Route path="/articles/:slug/edit" component={CreateArticle} />
+        <Route path="/articles/:slug/edit" component={EditArticle} />
         <Route path="/articles/:slug" component={ArticleContent} />
         <ProtectedRoute path="/new-article" component={CreateArticle} />
         <Route path="/profile" component={EditProfile} />
